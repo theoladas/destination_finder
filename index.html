@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <title>Destination Finder</title>
+
+    <!-- Leaflet (map) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+      defer
+    ></script>
+
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #ef4444;
+        --card: #344155; /* matches your screenshot's slate-ish blocks */
+        --cardText: #e5e7eb;
+        --radius: 16px;
+        --gap: 16px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: var(--bg);
+      }
+      .container {
+        padding: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      header h1 {
+        margin: 0 0 24px 0;
+        font-size: 32px;
+        font-weight: 700;
+      }
+      .searchRow {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .searchRow input {
+        flex: 1;
+        font-size: 16px;
+        padding: 16px 18px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        outline: none;
+      }
+      .searchRow input:focus {
+        border-color: #cbd5e1;
+      }
+      .searchRow button {
+        background: var(--accent);
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 12px 22px;
+        border-radius: 28px;
+        cursor: pointer;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 24px;
+        min-height: 480px;
+      }
+      @media (max-width: 960px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      /* Cards column */
+      .cards {
+        display: grid;
+        gap: var(--gap);
+      }
+      .card {
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        gap: 16px;
+        align-items: center;
+        background: var(--card);
+        color: var(--cardText);
+        border-radius: var(--radius);
+        padding: 12px;
+      }
+      .thumb {
+        width: 96px;
+        height: 64px;
+        border-radius: 999px;
+        background: #253041;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        color: #cbd5e1;
+        overflow: hidden;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .meta h3 {
+        margin: 0 0 6px 0;
+        font-size: 18px;
+        color: #f3f4f6;
+      }
+      .meta p {
+        margin: 0;
+        font-size: 14px;
+        color: #d1d5db;
+        line-height: 1.3;
+      }
+      .meta a {
+        color: #fde68a;
+        text-decoration: underline;
+        font-size: 13px;
+      }
+      /* Map column */
+      #map {
+        width: 100%;
+        height: 520px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+      }
+      /* Helpers */
+      .muted {
+        color: var(--muted);
+      }
+      .rowBetween {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .pill {
+        font-size: 12px;
+        background: #f3f4f6;
+        color: #111827;
+        border-radius: 999px;
+        padding: 4px 8px;
+      }
+      .status {
+        margin: 8px 0 0 0;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Destination Finder</h1>
+      </header>
+
+      <div class="searchRow">
+        <label
+          class="muted"
+          for="city"
+          style="position: absolute; left: -9999px"
+          >Destination</label
+        >
+        <input
+          id="city"
+          type="text"
+          placeholder="Enter destination… (e.g., Paris, Athens, London)"
+        />
+        <button id="searchBtn" type="button">Search</button>
+      </div>
+
+      <div class="layout">
+        <section>
+          <div class="rowBetween">
+            <h2 style="margin: 0; font-size: 18px">Places</h2>
+            <span id="count" class="pill">0 results</span>
+          </div>
+          <div id="status" class="status muted"></div>
+          <div id="cards" class="cards" aria-live="polite"></div>
+        </section>
+
+        <section>
+          <div id="map" role="region" aria-label="Map of places"></div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      // Globals
+      let map, markersLayer;
+
+      // Initialize Leaflet map
+      function initMap() {
+        map = L.map("map", { zoomControl: true }).setView([51.505, -0.09], 5);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
+
+        markersLayer = L.layerGroup().addTo(map);
+      }
+
+      // Debounce helper
+      function debounce(fn, ms = 400) {
+        let t;
+        return (...args) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn(...args), ms);
+        };
+      }
+
+      // Fetch lat/lon for a city via Nominatim (OSM)
+      async function geocodeCity(query) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&limit=1`;
+        const res = await fetch(url, { headers: { "Accept-Language": "en" } });
+        if (!res.ok) throw new Error("Geocoding failed");
+        const data = await res.json();
+        if (!data?.length) throw new Error("No results for that place");
+        const { lat, lon, display_name } = data[0];
+        return { lat: parseFloat(lat), lon: parseFloat(lon), display_name };
+      }
+
+      // Wikipedia: find notable places near coords
+      async function fetchNearbyPlaces(
+        lat,
+        lon,
+        radiusMeters = 10000,
+        limit = 10
+      ) {
+        // 1) Geo search for pages near the coordinates
+        const geoUrl = new URL("https://en.wikipedia.org/w/api.php");
+        geoUrl.search = new URLSearchParams({
+          origin: "*",
+          action: "query",
+          list: "geosearch",
+          gscoord: `${lat}|${lon}`,
+          gsradius: String(radiusMeters),
+          gslimit: String(limit),
+          format: "json",
+        });
+
+        const geoRes = await fetch(geoUrl);
+        if (!geoRes.ok) throw new Error("Wikipedia geosearch failed");
+        const geoData = await geoRes.json();
+        const items = geoData?.query?.geosearch ?? [];
+
+        // 2) For each result, get page summary (title, extract, thumbnail, content_urls)
+        const summaries = await Promise.all(
+          items.map(async (it) => {
+            const sumUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
+              it.title
+            )}`;
+            const sRes = await fetch(sumUrl);
+            if (!sRes.ok) return null;
+            const s = await sRes.json();
+            return {
+              title: s.title || it.title,
+              extract: s.extract || "",
+              url:
+                s.content_urls?.desktop?.page ||
+                `https://en.wikipedia.org/wiki/${encodeURIComponent(it.title)}`,
+              img: s.thumbnail?.source || null,
+              lat: it.lat,
+              lon: it.lon,
+            };
+          })
+        );
+
+        return summaries.filter(Boolean);
+      }
+
+      // Render cards and map markers
+      function renderResults(cityLabel, places) {
+        const cards = document.getElementById("cards");
+        const status = document.getElementById("status");
+        const count = document.getElementById("count");
+
+        // Clear previous
+        cards.innerHTML = "";
+        markersLayer.clearLayers();
+
+        count.textContent = `${places.length} result${
+          places.length === 1 ? "" : "s"
+        }`;
+        status.textContent = cityLabel
+          ? `Showing places around ${cityLabel}`
+          : "";
+
+        places.forEach((p) => {
+          // Card
+          const card = document.createElement("article");
+          card.className = "card";
+
+          const thumb = document.createElement("div");
+          thumb.className = "thumb";
+          if (p.img) {
+            const img = document.createElement("img");
+            img.src = p.img;
+            img.alt = p.title;
+            thumb.appendChild(img);
+          } else {
+            thumb.textContent = "Image";
+          }
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+
+          const h3 = document.createElement("h3");
+          h3.textContent = p.title;
+
+          const pDesc = document.createElement("p");
+          pDesc.textContent = p.extract || "No description available.";
+
+          const link = document.createElement("a");
+          link.href = p.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "Open on Wikipedia";
+
+          meta.append(h3, pDesc, link);
+          card.append(thumb, meta);
+          cards.appendChild(card);
+
+          // Marker
+          const marker = L.marker([p.lat, p.lon]).addTo(markersLayer);
+          marker.bindPopup(
+            `<strong>${p.title}</strong><br/><a href="${p.url}" target="_blank" rel="noopener">More info</a>`
+          );
+        });
+      }
+
+      async function runSearch() {
+        const input = document.getElementById("city");
+        const status = document.getElementById("status");
+        const q = input.value.trim();
+        if (!q) return;
+
+        status.textContent = "Searching…";
+        try {
+          const { lat, lon, display_name } = await geocodeCity(q);
+          map.setView([lat, lon], 12);
+
+          const places = await fetchNearbyPlaces(lat, lon, 10000, 12);
+          renderResults(display_name, places);
+
+          // Fit map to markers (if any)
+          if (markersLayer.getLayers().length > 0) {
+            const group = L.featureGroup(markersLayer.getLayers());
+            map.fitBounds(group.getBounds().pad(0.25), { maxZoom: 15 });
+          }
+        } catch (err) {
+          console.error(err);
+          status.textContent = "Couldn't find places for that destination.";
+          renderResults("", []);
+        }
+      }
+
+      // Wire up UI
+      window.addEventListener("DOMContentLoaded", () => {
+        initMap();
+
+        const input = document.getElementById("city");
+        const btn = document.getElementById("searchBtn");
+
+        btn.addEventListener("click", runSearch);
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") runSearch();
+        });
+
+        // Optional: small debounce to auto-search as you type
+        input.addEventListener(
+          "input",
+          debounce(() => {
+            const v = input.value.trim();
+            if (v.length > 2) runSearch();
+          }, 600)
+        );
+      });
+    </script>
+  </body>
+</html>
