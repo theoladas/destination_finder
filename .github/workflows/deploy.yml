@@ -1,9 +1,10 @@
+# .github/workflows/deploy.yml
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,7 +13,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -21,13 +22,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Important: sets up the Pages build "version" the deploy step needs
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare static site
         run: |
           mkdir -p dist
           cp index.html dist/index.html
-          # SPA fallback so deep links work (not harmful even if you don't use routes)
           cp index.html dist/404.html
-          # If you later add assets: cp -r public/* dist/  (or similar)
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -41,6 +44,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
