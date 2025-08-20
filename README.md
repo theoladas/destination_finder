@@ -9,19 +9,17 @@ Built with a tiny Deno server, client-side JavaScript, OpenStreetMap (Nominatim)
 
 ✨ Features
 
-- City search with geocoding via OpenStreetMap Nominatim
-- Nearby notable places via Wikipedia geosearch + summary
-- Clean card layout (image, title, blurb, link)
+- City search with geocoding via [OpenStreetMap Nominatim](https://nominatim.org/)
+- Nearby notable places via [Wikipedia](https://www.wikipedia.org/) geosearch + summary
+- Card layout (image, title, link)
 - Leaflet map with markers & popups
-- Fully static client — perfect for GitHub Pages
-- Zero build tools, zero frameworks
 
 🧰 Tech stack
 
-- Deno (local dev server)
-- Leaflet + OpenStreetMap tiles
-- OpenStreetMap Nominatim (geocoding)
-- Wikipedia API (places & details)
+- [Deno](https://deno.com/) (local dev server)
+- [Leaflet](https://leafletjs.com/) + [OpenStreetMap](https://www.openstreetmap.org/#map=6/54.91/-3.43) tiles
+- [OpenStreetMap Nominatim](https://github.com/osm-search/Nominatim) (geocoding)
+- [Wikipedia API](https://www.mediawiki.org/wiki/API:Nearby_places_viewer) (places & details)
 - Plain HTML/CSS/JS
 
 🏃 Run Locally 
