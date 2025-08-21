@@ -31,12 +31,7 @@ jobs:
           cp index.html dist/index.html
           cp index.html dist/404.html
 
-          if [ -f app.js ]; then cp app.js dist/app.js; fi
           if [ -f global.css ]; then cp global.css dist/global.css; fi
-
-          # Debug: show what we’re deploying
-          echo "--- dist contents ---"
-          find dist -maxdepth 2 -type f -print
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
