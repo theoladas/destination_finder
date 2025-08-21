@@ -1,6 +1,3 @@
-/// <reference lib="deno.ns" />
-/// <reference lib="deno.window" />
-
 import { serveFile } from "std/http/file_server.ts";
 
 const handler = async (req: Request): Promise<Response> => {
@@ -17,5 +14,4 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-console.log("Server running on http://localhost:8000");
 Deno.serve({ port: 8000 }, handler);

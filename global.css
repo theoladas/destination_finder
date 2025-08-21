@@ -1,0 +1,318 @@
+/* ================================
+   Theme tokens
+   ================================ */
+:root,
+html[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #ef4444;
+
+  --card: #344155;
+  --cardText: #e5e7eb;
+
+  --border: #e5e7eb;
+  --btn-bg: transparent;
+
+  --radius: 1rem;
+  --gap: 1rem;
+}
+
+html[data-theme="dark"] {
+  --bg: #0b1220;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #ef4444;
+
+  --card: #253041;
+  --cardText: #e5e7eb;
+
+  --border: #334155;
+  --btn-bg: #0f172a;
+
+  --radius: 1rem;
+  --gap: 1rem;
+}
+
+/* ================================
+   Base / Layout
+   ================================ */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ================================
+   Header
+   ================================ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+h1 {
+  font-family: "Lobster", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1.7rem;
+}
+h2 {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  margin: 0;
+}
+h3 {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  margin-bottom: 0.43rem;
+}
+p {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* ================================
+   Theme Toggle (Sun/Moon)
+   ================================ */
+.themeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.0625rem solid transparent;
+  background: var(--btn-bg);
+  cursor: pointer;
+}
+
+.themeToggle .emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+  transform: translateY(0.0625rem);
+}
+
+.themeToggle:hover {
+  filter: brightness(1.05);
+}
+
+/* Show only the emoji that matches the current theme */
+html[data-theme="light"] .emoji-sun {
+  display: inline;
+}
+html[data-theme="light"] .emoji-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .emoji-sun {
+  display: none;
+}
+html[data-theme="dark"] .emoji-moon {
+  display: inline;
+}
+
+/* ================================
+   Search Row
+   ================================ */
+.searchRow {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.searchRow input {
+  flex: 1;
+  font-size: 1rem;
+  padding: 1rem 1.125rem;
+  border: 0.125rem solid var(--border);
+  border-radius: 0.625rem;
+  outline: none;
+  color: var(--text);
+  background: var(--bg);
+}
+.searchRow input::placeholder {
+  color: var(--muted);
+  font-family: "Alumni Sans Pinstripe", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.2rem;
+}
+
+.searchRow input:focus {
+  border-color: #cbd5e1;
+}
+
+.searchRow button {
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  background: var(--accent);
+  background: palevioletred;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.375rem;
+  border-radius: 1.75rem;
+  cursor: pointer;
+}
+
+/* ================================
+   Two-column Layout
+   ================================ */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.5rem;
+  min-height: 30rem;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================
+   Cards (Places list)
+   ================================ */
+.cards {
+  display: grid;
+  gap: var(--gap);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  background: var(--card);
+  color: var(--cardText);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.thumb {
+  width: 6rem;
+  height: 100%;
+  border-radius: 8px;
+  background: #253041;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  overflow: hidden;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meta h3 {
+  margin: 0 0 0.375rem 0;
+  font-size: 1.125rem;
+  color: #f3f4f6;
+}
+
+.meta p {
+  font-family: "Roboto Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  margin: 0;
+  font-size: 0.875rem;
+  color: #d1d5db;
+  /* Make the card lines 5 */
+  --lines: 5;
+  line-clamp: var(--lines);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines);
+  overflow: hidden;
+}
+
+.meta a {
+  color: #fde68a;
+  text-decoration: underline;
+  font-size: 0.8125rem;
+}
+
+/* ================================
+   Map
+   ================================ */
+#map {
+  width: 100%;
+  height: 500px;
+  border: 0.0625rem solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* ================================
+   Helpers
+   ================================ */
+.muted {
+  color: var(--muted);
+}
+
+.rowBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pill {
+  font-family: "Alumni Sans Pinstripe", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: #f3f4f6;
+  color: #111827;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+}
+
+.status {
+  margin-bottom: 0.44rem;
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: #b91c1c;
+}
