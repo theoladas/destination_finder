@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Deploy to GitHub Pages
 
 on:
@@ -21,8 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Important: sets up the Pages build "version" the deploy step needs
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -31,6 +28,7 @@ jobs:
           mkdir -p dist
           cp index.html dist/index.html
           cp index.html dist/404.html
+          cp -r src/* dist/src/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
