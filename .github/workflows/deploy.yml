@@ -29,6 +29,10 @@ jobs:
           cp index.html dist/index.html
           cp index.html dist/404.html
 
+        # Root assets (copy if they exist)
+        [ -f app.js  && cp app.js dist/app.js ]
+        [ -f global.css  && cp global.css dist/global.css || true ]
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
