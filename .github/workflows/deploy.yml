@@ -31,8 +31,6 @@ jobs:
           cp index.html dist/index.html
           cp index.html dist/404.html
 
-          if [ -f global.css ]; then cp global.css dist/global.css; fi
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
