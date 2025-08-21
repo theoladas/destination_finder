@@ -173,6 +173,7 @@ html[data-theme="dark"] .emoji-moon {
 
 .searchRow input:focus {
   border-color: #cbd5e1;
+  border-color: palevioletred;
 }
 
 .searchRow button {
