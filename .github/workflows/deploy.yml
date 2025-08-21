@@ -30,12 +30,11 @@ jobs:
 
           cp index.html dist/index.html
           cp index.html dist/404.html
-
-          if [ -f global.css ]; then cp global.css dist/global.css; fi
-          if [ -f app.js ]; then cp app.js dist/app.js; fi
-          if [ -f map.js ]; then cp map.js dist/map.js; fi
-          if [ -f api.js ]; then cp api.js dist/api.js; fi
-          if [ -f ui.js ]; then cp ui.js dist/ui.js; fi
+          cp global.css dist/global.css
+          cp app.js dist/app.js
+          cp map.js dist/map.js
+          cp api.js dist/api.js
+          cp ui.js dist/ui.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
