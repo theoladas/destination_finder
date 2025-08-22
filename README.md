@@ -14,6 +14,7 @@ Built with a tiny Deno server, client-side JavaScript, OpenStreetMap (Nominatim)
 - Nearby notable places via [Wikipedia](https://www.wikipedia.org/) geosearch + summary
 - Card layout (image, title, link)
 - Leaflet map with markers & popups
+- Dark Theme change via [theme-change external library](https://github.com/saadeghi/theme-change)
 
 🧰 Tech stack
 
