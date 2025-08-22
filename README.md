@@ -19,7 +19,7 @@ Built with a tiny Deno server, client-side JavaScript, OpenStreetMap (Nominatim)
 🧰 Tech stack
 
 - [Deno](https://deno.com/) (local dev server)
-- [Leaflet](https://leafletjs.com/) + [OpenStreetMap](https://www.openstreetmap.org/#map=6/54.91/-3.43) tiles
+- [Leaflet](https://leafletjs.com/)
 - [OpenStreetMap Nominatim](https://github.com/osm-search/Nominatim) (geocoding)
 - [Wikipedia API](https://www.mediawiki.org/wiki/API:Nearby_places_viewer) (places & details)
 - Plain HTML/CSS/JS
