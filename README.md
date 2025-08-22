@@ -24,6 +24,10 @@ Built with a tiny Deno server, client-side JavaScript, OpenStreetMap (Nominatim)
 - [Wikipedia API](https://www.mediawiki.org/wiki/API:Nearby_places_viewer) (places & details)
 - Plain HTML/CSS/JS
 
+⏳ Diagram
+
+<img width="770" height="359" alt="Screenshot 2025-08-22 at 13 18 17" src="https://github.com/user-attachments/assets/055281f5-ba90-4ff6-b305-306ad14e4e12" />
+
 🏃 Run Locally 
 
 `deno task dev`
